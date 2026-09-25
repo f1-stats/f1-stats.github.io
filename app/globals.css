@@ -717,6 +717,12 @@ footer a:hover {
   .tr span:nth-child(3) {
     display: none;
   }
+  .driver-results .thead,
+  .driver-results .tr {
+    grid-template-columns: 45px minmax(0, 1fr) 46px 56px;
+    gap: 10px;
+    padding: 0 14px;
+  }
   .featuregrid,
   .toolgrid,
   .teamgrid,
