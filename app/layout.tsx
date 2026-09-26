@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Script from "next/script";
 import {
   LanguageProvider,
   LanguageSwitcher,
@@ -12,6 +13,9 @@ export const metadata: Metadata = {
   title: "F1 Stats — Formula 1 Statistics & Tools",
   description:
     "Formula 1 standings, race results, driver statistics, comparisons and useful F1 calculators.",
+  verification: {
+    google: "nScZP2sBUKhxwKfvtKwCxQkPMCIOOvYNT35E5W2pDn8",
+  },
 };
 
 export default function RootLayout({
@@ -30,6 +34,16 @@ export default function RootLayout({
               <LanguageSwitcher />
             </div>
           </header>
+          <Script
+            src="https://www.googletagmanager.com/gtag/js?id=G-8GTZX14V3J"
+            strategy="afterInteractive"
+          />
+          <Script id="google-analytics" strategy="afterInteractive">
+            {`window.dataLayer = window.dataLayer || [];
+function gtag(){window.dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-8GTZX14V3J');`}
+          </Script>
           {children}
           <footer>
             <span>
