@@ -1,2 +1,52 @@
-import Link from "next/link"; import { Text } from "@/app/components/language"; import { TeamIdentity } from "@/app/components/team-identity"; import { constructorStandings } from "@/lib/f1";
-export default function TeamsPage() { const rows = constructorStandings(); return <main className="page"><h1><Text id="f1Teams" /></h1><p className="lead"><Text id="teamsLead" /></p><div className="table"><div className="thead"><span><Text id="position" /></span><span><Text id="team" /></span><span><Text id="wins" /></span><span><Text id="points" /></span></div>{rows.map((r: any) => <Link className="tr" key={r.Constructor.constructorId} href={`/teams/${r.Constructor.constructorId}`}><span>{r.position}</span><span className="strong"><TeamIdentity team={r.Constructor} /></span><span>{r.wins}</span><span className="strong">{r.points}</span></Link>)}{rows.length === 0 && <div className="empty"><Text id="dataWorkflow" /></div>}</div></main> }
+import Link from "next/link";
+import { Text } from "@/app/components/language";
+import { TeamIdentity } from "@/app/components/team-identity";
+import { constructorStandings } from "@/lib/f1";
+export default function TeamsPage() {
+  const rows = constructorStandings();
+  return (
+    <main className="page">
+      <h1>
+        <Text id="f1Teams" />
+      </h1>
+      <p className="lead">
+        <Text id="teamsLead" />
+      </p>
+      <div className="table">
+        <div className="thead">
+          <span>
+            <Text id="position" />
+          </span>
+          <span>
+            <Text id="team" />
+          </span>
+          <span>
+            <Text id="wins" />
+          </span>
+          <span>
+            <Text id="points" />
+          </span>
+        </div>
+        {rows.map((r: any) => (
+          <Link
+            className="tr"
+            key={r.Constructor.constructorId}
+            href={`/teams/${r.Constructor.constructorId}`}
+          >
+            <span>{r.position}</span>
+            <span className="strong">
+              <TeamIdentity team={r.Constructor} />
+            </span>
+            <span>{r.wins}</span>
+            <span className="strong">{r.points}</span>
+          </Link>
+        ))}
+        {rows.length === 0 && (
+          <div className="empty">
+            <Text id="dataWorkflow" />
+          </div>
+        )}
+      </div>
+    </main>
+  );
+}

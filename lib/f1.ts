@@ -31,6 +31,7 @@ export type Race = {
   };
   date: string;
   time?: string;
+  Sprint?: { date: string; time?: string };
   Results?: any[];
 };
 
@@ -82,8 +83,14 @@ export function results(round: string): any[] {
   );
 }
 function roundRows(round: string, name: string, key: string): any[] {
-  const d: any = read<any>(`round-${round}-${name}.json`, { RaceTable: { Races: [] } });
-  return d.RaceTable?.Races?.[0]?.[key] ?? d.MRData?.RaceTable?.Races?.[0]?.[key] ?? [];
+  const d: any = read<any>(`round-${round}-${name}.json`, {
+    RaceTable: { Races: [] },
+  });
+  return (
+    d.RaceTable?.Races?.[0]?.[key] ??
+    d.MRData?.RaceTable?.Races?.[0]?.[key] ??
+    []
+  );
 }
 export function qualifyingResults(round: string): any[] {
   return roundRows(round, "qualifying", "QualifyingResults");

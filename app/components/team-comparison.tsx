@@ -3,40 +3,32 @@
 import Link from "next/link";
 import { ArrowLeftRight, Trophy } from "lucide-react";
 import { useState } from "react";
-import { Text } from "@/app/components/language";
-import { ChampionshipSimulator } from "@/app/components/championship-simulator";
-import { TeamIdentity } from "@/app/components/team-identity";
-import type { Race } from "@/lib/f1";
+import { Text, useText } from "@/app/components/language";
+import { TeamChampionshipSimulator } from "@/app/components/team-championship-simulator";
+import type { ConstructorStanding, DriverStanding, Race } from "@/lib/f1";
 
-type DriverRow = {
-  position: string;
-  points: string;
-  wins: string;
-  Driver: { driverId: string; givenName: string; familyName: string };
-  Constructors?: { constructorId: string; name: string }[];
-};
-
-function driverName(driver: DriverRow) {
-  return `${driver.Driver.givenName} ${driver.Driver.familyName}`;
-}
-
-export function DriverComparison({
+export function TeamComparison({
+  teams,
   drivers,
   races,
 }: {
-  drivers: DriverRow[];
+  teams: ConstructorStanding[];
+  drivers: DriverStanding[];
   races: Race[];
 }) {
-  const [leftId, setLeftId] = useState(drivers[0]?.Driver.driverId ?? "");
-  const [rightId, setRightId] = useState(
-    drivers[1]?.Driver.driverId ?? drivers[0]?.Driver.driverId ?? "",
+  const [leftId, setLeftId] = useState(
+    teams[0]?.Constructor.constructorId ?? "",
   );
+  const [rightId, setRightId] = useState(
+    teams[1]?.Constructor.constructorId ?? teams[0]?.Constructor.constructorId ?? "",
+  );
+  const text = useText();
   const left =
-    drivers.find((driver) => driver.Driver.driverId === leftId) ?? drivers[0];
+    teams.find((team) => team.Constructor.constructorId === leftId) ?? teams[0];
   const right =
-    drivers.find((driver) => driver.Driver.driverId === rightId) ??
-    drivers[1] ??
-    drivers[0];
+    teams.find((team) => team.Constructor.constructorId === rightId) ??
+    teams[1] ??
+    teams[0];
 
   if (!left || !right)
     return <div className="empty">Standings data is not available yet.</div>;
@@ -66,20 +58,23 @@ export function DriverComparison({
   ] as const;
 
   return (
-    <section className="comparison">
+    <section className="comparison team-comparison">
+      <p className="compare-mode-lead">
+        <Text id="teamCompareLead" />
+      </p>
       <div className="compare-selectors">
         <label>
-          <Text id="driverA" />
+          <Text id="teamA" />
           <select
             value={leftId}
             onChange={(event) => setLeftId(event.target.value)}
           >
-            {drivers.map((driver) => (
+            {teams.map((team) => (
               <option
-                key={driver.Driver.driverId}
-                value={driver.Driver.driverId}
+                key={team.Constructor.constructorId}
+                value={team.Constructor.constructorId}
               >
-                {driverName(driver)}
+                {team.Constructor.name}
               </option>
             ))}
           </select>
@@ -87,8 +82,8 @@ export function DriverComparison({
         <button
           className="compare-swap"
           type="button"
-          aria-label="Swap compared drivers"
-          title="Swap drivers"
+          aria-label={text.swapTeams}
+          title={text.swapTeams}
           onClick={() => {
             setLeftId(rightId);
             setRightId(leftId);
@@ -97,17 +92,17 @@ export function DriverComparison({
           <ArrowLeftRight aria-hidden="true" size={18} />
         </button>
         <label>
-          <Text id="driverB" />
+          <Text id="teamB" />
           <select
             value={rightId}
             onChange={(event) => setRightId(event.target.value)}
           >
-            {drivers.map((driver) => (
+            {teams.map((team) => (
               <option
-                key={driver.Driver.driverId}
-                value={driver.Driver.driverId}
+                key={team.Constructor.constructorId}
+                value={team.Constructor.constructorId}
               >
-                {driverName(driver)}
+                {team.Constructor.name}
               </option>
             ))}
           </select>
@@ -116,13 +111,10 @@ export function DriverComparison({
       <div className="compare-drivers">
         <Link
           className="compare-driver"
-          href={`/drivers/${left.Driver.driverId}`}
+          href={`/teams/${left.Constructor.constructorId}`}
         >
-          <span>
-            <Text id="driverA" />
-          </span>
-          <h2>{driverName(left)}</h2>
-          <TeamIdentity team={left.Constructors?.[0]} />
+          <span><Text id="teamA" /></span>
+          <h2>{left.Constructor.name}</h2>
         </Link>
         <div className="compare-versus" aria-hidden="true">
           <Trophy size={18} />
@@ -130,13 +122,10 @@ export function DriverComparison({
         </div>
         <Link
           className="compare-driver compare-driver-right"
-          href={`/drivers/${right.Driver.driverId}`}
+          href={`/teams/${right.Constructor.constructorId}`}
         >
-          <span>
-            <Text id="driverB" />
-          </span>
-          <h2>{driverName(right)}</h2>
-          <TeamIdentity team={right.Constructors?.[0]} />
+          <span><Text id="teamB" /></span>
+          <h2>{right.Constructor.name}</h2>
         </Link>
       </div>
       <div className="compare-metrics">
@@ -153,9 +142,7 @@ export function DriverComparison({
                 {metric.lowerIsBetter ? `P${metric.left}` : metric.left}
                 {metric.suffix}
               </strong>
-              <span>
-                <Text id={metric.id} />
-              </span>
+              <span><Text id={metric.id} /></span>
               <strong className={rightLeads ? "metric-lead" : ""}>
                 {metric.lowerIsBetter ? `P${metric.right}` : metric.right}
                 {metric.suffix}
@@ -172,12 +159,13 @@ export function DriverComparison({
           <Text id="championshipSimulator" />
         </h2>
       </div>
-      <ChampionshipSimulator
+      <TeamChampionshipSimulator
         key={`${leftId}-${rightId}`}
+        teams={teams}
         drivers={drivers}
         races={races}
-        driverId={leftId}
-        rivalId={rightId}
+        teamId={leftId}
+        rivalTeamId={rightId}
       />
     </section>
   );
