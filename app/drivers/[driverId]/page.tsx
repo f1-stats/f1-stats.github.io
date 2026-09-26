@@ -1,5 +1,7 @@
 import { driverStandings, displayName, results, schedule } from "@/lib/f1";
 import { Text } from "@/app/components/language";
+import { teamColor } from "@/app/components/team-identity";
+import { RacePointsTrendChart } from "@/app/components/race-points-trend-chart";
 
 export async function generateStaticParams() {
   return driverStandings().map((driver) => ({
@@ -34,6 +36,13 @@ export default async function DriverPage({
         raceName: race.raceName,
       })),
   );
+  const pointsByRound = all.map((result: any) => ({
+    code: `R${result.round}`,
+    name: result.raceName,
+    points: Number(result.points ?? 0),
+    color: teamColor(result.Constructor?.constructorId),
+    teamName: result.Constructor?.name ?? "Unknown team",
+  }));
 
   return (
     <main className="page detail-page">
@@ -96,6 +105,13 @@ export default async function DriverPage({
           </div>
         ))}
       </div>
+      {pointsByRound.length > 0 && (
+        <RacePointsTrendChart
+          drivers={pointsByRound}
+          title="driverPointsTrend"
+          lead="driverPointsTrendLead"
+        />
+      )}
     </main>
   );
 }

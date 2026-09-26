@@ -1,7 +1,24 @@
 import { qualifyingResults, results, schedule, sprintResults } from "@/lib/f1";
-import { TeamIdentity } from "@/app/components/team-identity";
+import { TeamIdentity, teamColor } from "@/app/components/team-identity";
 import { RaceWeekend } from "@/app/components/race-weekend";
 import { Text } from "@/app/components/language";
+import { RacePointsTrendChart } from "@/app/components/race-points-trend-chart";
+import { QualifyingLapTrendChart } from "@/app/components/qualifying-lap-trend-chart";
+
+function parseLapTime(value: string | undefined): number | null {
+  if (!value) return null;
+  const parts = value.split(":").map(Number);
+  if (parts.some((part) => !Number.isFinite(part))) return null;
+  return parts.length === 2 ? parts[0] * 60 + parts[1] : (parts[0] ?? null);
+}
+
+function finalQualifyingLap(row: any) {
+  for (const session of ["Q3", "Q2", "Q1"] as const) {
+    const time = parseLapTime(row[session]);
+    if (time !== null) return { time, session };
+  }
+  return null;
+}
 
 export async function generateStaticParams() {
   return schedule().map((race) => ({
@@ -19,6 +36,28 @@ export default async function RacePage({
   const rows = results(round);
   const qualifying = qualifyingResults(round);
   const sprint = sprintResults(round);
+  const qualifyingLapDrivers = qualifying.flatMap((row: any) => {
+    const lap = finalQualifyingLap(row);
+    if (!lap) return [];
+    return [
+      {
+        code:
+          row.Driver.code ?? row.Driver.familyName.slice(0, 3).toUpperCase(),
+        name: `${row.Driver.givenName} ${row.Driver.familyName}`,
+        session: lap.session,
+        time: lap.time,
+        color: teamColor(row.Constructor?.constructorId),
+        teamName: row.Constructor?.name ?? "Unknown team",
+      },
+    ];
+  });
+  const racePointDrivers = rows.map((row: any) => ({
+    code: row.Driver.code ?? row.Driver.familyName.slice(0, 3).toUpperCase(),
+    name: `${row.Driver.givenName} ${row.Driver.familyName}`,
+    points: Number(row.points ?? 0),
+    color: teamColor(row.Constructor?.constructorId),
+    teamName: row.Constructor?.name ?? "Unknown team",
+  }));
 
   if (!race)
     return (
@@ -48,7 +87,9 @@ export default async function RacePage({
       <RaceWeekend race={race} />
       {qualifying.length > 0 && (
         <>
-          <h2>Qualifying results</h2>
+          <h2>
+            <Text id="qualifyingResults" />
+          </h2>
           <div className="table">
             <div className="thead">
               <span>
@@ -75,11 +116,16 @@ export default async function RacePage({
               </div>
             ))}
           </div>
+          {qualifyingLapDrivers.length > 0 && (
+            <QualifyingLapTrendChart drivers={qualifyingLapDrivers} />
+          )}
         </>
       )}
       {sprint.length > 0 && (
         <>
-          <h2>Sprint results</h2>
+          <h2>
+            <Text id="sprintResults" />
+          </h2>
           <div className="table">
             <div className="thead">
               <span>
@@ -115,7 +161,7 @@ export default async function RacePage({
           <h2>
             <Text id="raceResults" />
           </h2>
-          <div className="table">
+          <div className="table race-results">
             <div className="thead">
               <span>
                 <Text id="position" />
@@ -129,6 +175,9 @@ export default async function RacePage({
               <span>
                 <Text id="timeStatus" />
               </span>
+              <span>
+                <Text id="points" />
+              </span>
             </div>
             {rows.map((r: any) => (
               <div className="tr" key={r.number}>
@@ -140,9 +189,13 @@ export default async function RacePage({
                   <TeamIdentity team={r.Constructor} />
                 </span>
                 <span>{r.Time?.time ?? r.status}</span>
+                <span className="strong">{r.points}</span>
               </div>
             ))}
           </div>
+          {racePointDrivers.length > 0 && (
+            <RacePointsTrendChart drivers={racePointDrivers} />
+          )}
         </>
       )}
     </main>

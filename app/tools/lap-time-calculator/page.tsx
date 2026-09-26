@@ -1,4 +1,70 @@
 "use client";
 import { useState } from "react";
 import { Text } from "@/app/components/language";
-export default function Lap() { const [minutes, setMinutes] = useState(1); const [seconds, setSeconds] = useState(30); const [delta, setDelta] = useState(0.25); const base = minutes * 60 + seconds; const target = base + delta; const percent = delta / base * 100; const format = (time: number) => `${Math.floor(time / 60)}:${(time % 60).toFixed(3).padStart(6, "0")}`; return <main className="page"><div className="eyebrow"><Text id="paceAnalysis" /></div><h1><Text id="lapTimeCalculator" /></h1><p className="lead"><Text id="lapLead" /></p><div className="formgrid"><label>Reference minutes<input type="number" min="0" value={minutes} onChange={(event) => setMinutes(Number(event.target.value))} /></label><label>Reference seconds<input type="number" min="0" step="0.001" value={seconds} onChange={(event) => setSeconds(Number(event.target.value))} /></label><label>Lap delta (sec)<input type="number" step="0.001" value={delta} onChange={(event) => setDelta(Number(event.target.value))} /></label></div><div className="points-breakdown"><div><span>TARGET LAP</span><strong>{format(target)}</strong></div><div><span>PACE DELTA</span><strong>{percent.toFixed(3)}%</strong></div><div className="points-total"><span>10-LAP GAP</span><strong>{(delta * 10).toFixed(3)}s</strong></div></div></main>; }
+export default function Lap() {
+  const [minutes, setMinutes] = useState(1);
+  const [seconds, setSeconds] = useState(30);
+  const [delta, setDelta] = useState(0.25);
+  const base = minutes * 60 + seconds;
+  const target = base + delta;
+  const percent = (delta / base) * 100;
+  const format = (time: number) =>
+    `${Math.floor(time / 60)}:${(time % 60).toFixed(3).padStart(6, "0")}`;
+  return (
+    <main className="page">
+      <div className="eyebrow">
+        <Text id="paceAnalysis" />
+      </div>
+      <h1>
+        <Text id="lapTimeCalculator" />
+      </h1>
+      <p className="lead">
+        <Text id="lapLead" />
+      </p>
+      <div className="formgrid">
+        <label>
+          Reference minutes
+          <input
+            type="number"
+            min="0"
+            value={minutes}
+            onChange={(event) => setMinutes(Number(event.target.value))}
+          />
+        </label>
+        <label>
+          Reference seconds
+          <input
+            type="number"
+            min="0"
+            step="0.001"
+            value={seconds}
+            onChange={(event) => setSeconds(Number(event.target.value))}
+          />
+        </label>
+        <label>
+          Lap delta (sec)
+          <input
+            type="number"
+            step="0.001"
+            value={delta}
+            onChange={(event) => setDelta(Number(event.target.value))}
+          />
+        </label>
+      </div>
+      <div className="points-breakdown">
+        <div>
+          <span>TARGET LAP</span>
+          <strong>{format(target)}</strong>
+        </div>
+        <div>
+          <span>PACE DELTA</span>
+          <strong>{percent.toFixed(3)}%</strong>
+        </div>
+        <div className="points-total">
+          <span>10-LAP GAP</span>
+          <strong>{(delta * 10).toFixed(3)}s</strong>
+        </div>
+      </div>
+    </main>
+  );
+}

@@ -17,6 +17,10 @@ const teamDetails: Record<string, { color: string; label: string }> = {
   williams: { color: "#1868db", label: "WI" },
 };
 
+export function teamColor(constructorId?: string) {
+  return teamDetails[constructorId ?? ""]?.color ?? "#626c77";
+}
+
 export function TeamIdentity({ team }: { team?: Constructor }) {
   const details = teamDetails[team?.constructorId ?? ""];
   const label = details?.label ?? team?.name?.slice(0, 2).toUpperCase() ?? "--";
@@ -25,7 +29,7 @@ export function TeamIdentity({ team }: { team?: Constructor }) {
     <span className="team-identity">
       <span
         className="team-mark"
-        style={{ backgroundColor: details?.color ?? "#626c77" }}
+        style={{ backgroundColor: teamColor(team?.constructorId) }}
         aria-hidden="true"
       >
         {label}
