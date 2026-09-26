@@ -15,6 +15,7 @@ export const metadata: Metadata = {
     "Formula 1 standings, race results, driver statistics, comparisons and useful F1 calculators.",
   verification: {
     google: "nScZP2sBUKhxwKfvtKwCxQkPMCIOOvYNT35E5W2pDn8",
+    yandex: "20301f0124f77990",
   },
 };
 
