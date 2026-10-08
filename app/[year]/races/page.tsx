@@ -33,8 +33,10 @@ export default async function RacesPage({
               </span>
               <h2>{race.raceName}</h2>
               <p>
-                {race.Circuit.Location.locality}, {race.Circuit.Location.country}
+                {race.Circuit.Location.locality},{" "}
+                {race.Circuit.Location.country}
               </p>
+              {/* {race.Circuit.circuitId} */}
               {image && (
                 <Image
                   className="race-circuit-image"

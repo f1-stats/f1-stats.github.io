@@ -94,7 +94,9 @@ export function circuitImage(circuitId: string): string | undefined {
   if (!/^[a-z0-9_-]+$/i.test(circuitId)) return undefined;
   for (const extension of ["svg", "png", "webp", "jpg", "jpeg"]) {
     const filename = `${circuitId}.${extension}`;
-    if (fs.existsSync(path.join(process.cwd(), "public", "circuits", filename))) {
+    if (
+      fs.existsSync(path.join(process.cwd(), "public", "circuits", filename))
+    ) {
       return `/circuits/${filename}`;
     }
   }
