@@ -7,6 +7,7 @@ import {
   Text,
 } from "@/app/components/language";
 import { SiteNavigation } from "@/app/components/site-navigation";
+import { ThemeSwitcher } from "@/app/components/theme-switcher";
 import {
   SeasonHomeLink,
   SeasonSwitcher,
@@ -33,7 +34,14 @@ export default function RootLayout({
   );
 
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try{var theme=localStorage.getItem('f1-theme');document.documentElement.dataset.theme=theme==='light'||theme==='dark'?theme:matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}catch{document.documentElement.dataset.theme=matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light'}`,
+          }}
+        />
+      </head>
       <body>
         <LanguageProvider>
           <header className="header">
@@ -42,6 +50,7 @@ export default function RootLayout({
               <SiteNavigation defaultYear={currentYear} />
               <SeasonSwitcher years={years} defaultYear={currentYear} />
               <LanguageSwitcher />
+              <ThemeSwitcher />
             </div>
           </header>
           <Script

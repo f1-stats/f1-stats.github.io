@@ -70,7 +70,7 @@ export function RacePointsTrendChart({
                 x2={chartWidth - chartMargin.right}
                 y1={y(tick)}
                 y2={y(tick)}
-                stroke="#ffffff18"
+                stroke="var(--line)"
               />
               <text x={chartMargin.left - 12} y={y(tick) + 4} textAnchor="end">
                 {tick}

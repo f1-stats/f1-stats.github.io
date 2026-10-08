@@ -1,4 +1,5 @@
-import { qualifyingResults, results, schedule, sprintResults } from "@/lib/f1";
+import Image from "next/image";
+import { circuitImage, qualifyingResults, results, schedule, sprintResults } from "@/lib/f1";
 import { TeamIdentity, teamColor } from "@/app/components/team-identity";
 import { RaceWeekend } from "@/app/components/race-weekend";
 import { Text } from "@/app/components/language";
@@ -72,6 +73,8 @@ export default async function RacePage({
       </main>
     );
 
+  const image = circuitImage(race.Circuit.circuitId);
+
   return (
     <main className="page detail-page">
       <div className="eyebrow">
@@ -82,6 +85,15 @@ export default async function RacePage({
         {race.Circuit.circuitName} · {race.Circuit.Location.locality},{" "}
         {race.Circuit.Location.country}
       </p>
+      {image && (
+        <Image
+          className="race-circuit-image race-detail-circuit-image"
+          src={image}
+          alt={race.Circuit.circuitName}
+          width={960}
+          height={360}
+        />
+      )}
       <h2>
         <Text id="weekendSchedule" />
       </h2>
