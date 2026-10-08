@@ -23,9 +23,11 @@ function driverName(driver: DriverRow) {
 export function DriverComparison({
   drivers,
   races,
+  year,
 }: {
   drivers: DriverRow[];
   races: Race[];
+  year: string;
 }) {
   const [leftId, setLeftId] = useState(drivers[0]?.Driver.driverId ?? "");
   const [rightId, setRightId] = useState(
@@ -116,7 +118,7 @@ export function DriverComparison({
       <div className="compare-drivers">
         <Link
           className="compare-driver"
-          href={`/drivers/${left.Driver.driverId}`}
+          href={`/${year}/drivers/${left.Driver.driverId}`}
         >
           <span>
             <Text id="driverA" />
@@ -130,7 +132,7 @@ export function DriverComparison({
         </div>
         <Link
           className="compare-driver compare-driver-right"
-          href={`/drivers/${right.Driver.driverId}`}
+          href={`/${year}/drivers/${right.Driver.driverId}`}
         >
           <span>
             <Text id="driverB" />

@@ -7,6 +7,11 @@ import {
   Text,
 } from "@/app/components/language";
 import { SiteNavigation } from "@/app/components/site-navigation";
+import {
+  SeasonHomeLink,
+  SeasonSwitcher,
+} from "@/app/components/season-controls";
+import { availableSeasons, currentSeason } from "@/lib/f1";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,16 +27,20 @@ export const metadata: Metadata = {
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
+  const currentYear = currentSeason();
+  const years = [...new Set([currentYear, ...availableSeasons()])].sort(
+    (a, b) => Number(b) - Number(a),
+  );
+
   return (
     <html lang="en">
       <body>
         <LanguageProvider>
           <header className="header">
             <div className="nav">
-              <Link href="/" className="logo">
-                <span>F1</span> STATS
-              </Link>
-              <SiteNavigation />
+              <SeasonHomeLink defaultYear={currentYear} />
+              <SiteNavigation defaultYear={currentYear} />
+              <SeasonSwitcher years={years} defaultYear={currentYear} />
               <LanguageSwitcher />
             </div>
           </header>
@@ -48,7 +57,7 @@ gtag('config', 'G-8GTZX14V3J');`}
           {children}
           <footer>
             <span>
-              &copy; 2026 F1 Stats. <Text id="rightsReserved" />
+              &copy; {currentYear} F1 Stats. <Text id="rightsReserved" />
             </span>
             <span>
               <Text id="dataSource" />

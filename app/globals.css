@@ -102,6 +102,24 @@ a {
   background: var(--surface-raised);
   color: var(--text);
 }
+.season-switcher {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--faint);
+  font-size: 10px;
+  font-weight: 800;
+}
+.season-switcher select {
+  min-width: 76px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 7px 8px;
+  font: inherit;
+  cursor: pointer;
+}
 .hero {
   border-bottom: 1px solid var(--line);
   background: linear-gradient(112deg, #13171d 0%, #0b0d10 55%, #251311 100%);
@@ -1046,6 +1064,9 @@ footer a:hover {
   .site-navigation {
     flex: 0;
     margin-left: auto;
+  }
+  .season-switcher span {
+    display: none;
   }
   .menu-toggle {
     display: inline-flex;

@@ -3,8 +3,12 @@ import { Text } from "@/app/components/language";
 import { teamColor } from "@/app/components/team-identity";
 import { RacePointsTrendChart } from "@/app/components/race-points-trend-chart";
 
-export async function generateStaticParams() {
-  return driverStandings().map((driver) => ({
+export async function generateStaticParams({
+  params,
+}: {
+  params: { year: string };
+}) {
+  return driverStandings(params.year).map((driver) => ({
     driverId: driver.Driver.driverId,
   }));
 }
@@ -12,10 +16,12 @@ export async function generateStaticParams() {
 export default async function DriverPage({
   params,
 }: {
-  params: Promise<{ driverId: string }>;
+  params: Promise<{ year: string; driverId: string }>;
 }) {
-  const { driverId } = await params;
-  const driver = driverStandings().find((x) => x.Driver.driverId === driverId);
+  const { year, driverId } = await params;
+  const driver = driverStandings(year).find(
+    (x) => x.Driver.driverId === driverId,
+  );
 
   if (!driver)
     return (
@@ -26,9 +32,9 @@ export default async function DriverPage({
       </main>
     );
 
-  const races = schedule();
+  const races = schedule(year);
   const all = races.flatMap((race) =>
-    results(race.round)
+    results(race.round, year)
       .filter((result: any) => result.Driver.driverId === driverId)
       .map((result: any) => ({
         ...result,
@@ -47,7 +53,7 @@ export default async function DriverPage({
   return (
     <main className="page detail-page">
       <div className="eyebrow">
-        <Text id="driverSeason" />
+        {year} <Text id="driverSeason" />
       </div>
       <h1>{displayName(driver.Driver)}</h1>
       <p className="lead">

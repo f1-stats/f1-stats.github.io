@@ -2,8 +2,12 @@ import Link from "next/link";
 import { constructorStandings, driverStandings } from "@/lib/f1";
 import { Text } from "@/app/components/language";
 
-export async function generateStaticParams() {
-  return constructorStandings().map((team) => ({
+export async function generateStaticParams({
+  params,
+}: {
+  params: { year: string };
+}) {
+  return constructorStandings(params.year).map((team) => ({
     teamId: team.Constructor.constructorId,
   }));
 }
@@ -11,13 +15,13 @@ export async function generateStaticParams() {
 export default async function TeamPage({
   params,
 }: {
-  params: Promise<{ teamId: string }>;
+  params: Promise<{ year: string; teamId: string }>;
 }) {
-  const { teamId } = await params;
-  const team = constructorStandings().find(
+  const { year, teamId } = await params;
+  const team = constructorStandings(year).find(
     (x) => x.Constructor.constructorId === teamId,
   );
-  const drivers = driverStandings().filter((x) =>
+  const drivers = driverStandings(year).filter((x) =>
     x.Constructors?.some((c) => c.constructorId === teamId),
   );
 
@@ -33,7 +37,7 @@ export default async function TeamPage({
   return (
     <main className="page detail-page">
       <div className="eyebrow">
-        <Text id="constructorSeason" />
+        {year} <Text id="constructorSeason" />
       </div>
       <h1>{team.Constructor.name}</h1>
       <p className="lead">
@@ -45,7 +49,10 @@ export default async function TeamPage({
       </h2>
       <div className="cards">
         {drivers.map((d) => (
-          <Link href={`/drivers/${d.Driver.driverId}`} key={d.Driver.driverId}>
+          <Link
+            href={`/${year}/drivers/${d.Driver.driverId}`}
+            key={d.Driver.driverId}
+          >
             <b>
               {d.Driver.givenName} {d.Driver.familyName}
             </b>

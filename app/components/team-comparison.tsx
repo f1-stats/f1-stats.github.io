@@ -11,16 +11,20 @@ export function TeamComparison({
   teams,
   drivers,
   races,
+  year,
 }: {
   teams: ConstructorStanding[];
   drivers: DriverStanding[];
   races: Race[];
+  year: string;
 }) {
   const [leftId, setLeftId] = useState(
     teams[0]?.Constructor.constructorId ?? "",
   );
   const [rightId, setRightId] = useState(
-    teams[1]?.Constructor.constructorId ?? teams[0]?.Constructor.constructorId ?? "",
+    teams[1]?.Constructor.constructorId ??
+      teams[0]?.Constructor.constructorId ??
+      "",
   );
   const text = useText();
   const left =
@@ -111,9 +115,11 @@ export function TeamComparison({
       <div className="compare-drivers">
         <Link
           className="compare-driver"
-          href={`/teams/${left.Constructor.constructorId}`}
+          href={`/${year}/teams/${left.Constructor.constructorId}`}
         >
-          <span><Text id="teamA" /></span>
+          <span>
+            <Text id="teamA" />
+          </span>
           <h2>{left.Constructor.name}</h2>
         </Link>
         <div className="compare-versus" aria-hidden="true">
@@ -122,9 +128,11 @@ export function TeamComparison({
         </div>
         <Link
           className="compare-driver compare-driver-right"
-          href={`/teams/${right.Constructor.constructorId}`}
+          href={`/${year}/teams/${right.Constructor.constructorId}`}
         >
-          <span><Text id="teamB" /></span>
+          <span>
+            <Text id="teamB" />
+          </span>
           <h2>{right.Constructor.name}</h2>
         </Link>
       </div>
@@ -142,7 +150,9 @@ export function TeamComparison({
                 {metric.lowerIsBetter ? `P${metric.left}` : metric.left}
                 {metric.suffix}
               </strong>
-              <span><Text id={metric.id} /></span>
+              <span>
+                <Text id={metric.id} />
+              </span>
               <strong className={rightLeads ? "metric-lead" : ""}>
                 {metric.lowerIsBetter ? `P${metric.right}` : metric.right}
                 {metric.suffix}

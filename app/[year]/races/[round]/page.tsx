@@ -20,8 +20,12 @@ function finalQualifyingLap(row: any) {
   return null;
 }
 
-export async function generateStaticParams() {
-  return schedule().map((race) => ({
+export async function generateStaticParams({
+  params,
+}: {
+  params: { year: string };
+}) {
+  return schedule(params.year).map((race) => ({
     round: race.round,
   }));
 }
@@ -29,13 +33,13 @@ export async function generateStaticParams() {
 export default async function RacePage({
   params,
 }: {
-  params: Promise<{ round: string }>;
+  params: Promise<{ year: string; round: string }>;
 }) {
-  const { round } = await params;
-  const race = schedule().find((r) => r.round === round);
-  const rows = results(round);
-  const qualifying = qualifyingResults(round);
-  const sprint = sprintResults(round);
+  const { year, round } = await params;
+  const race = schedule(year).find((r) => r.round === round);
+  const rows = results(round, year);
+  const qualifying = qualifyingResults(round, year);
+  const sprint = sprintResults(round, year);
   const qualifyingLapDrivers = qualifying.flatMap((row: any) => {
     const lap = finalQualifyingLap(row);
     if (!lap) return [];

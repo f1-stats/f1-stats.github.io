@@ -1,6 +1,6 @@
 # F1 Stats
 
-F1 Stats 是一个支持英文和中文的 Formula 1 数据与工具网站，展示 2026 赛季积分榜、赛程与比赛结果，并提供车手/车队对比和实用计算器。
+F1 Stats 是一个支持英文和中文的 Formula 1 数据与工具网站，展示各赛季积分榜、赛程与比赛结果，并提供车手/车队对比和实用计算器。
 
 ## 功能
 
@@ -43,10 +43,11 @@ Next.js 静态导出生成在 `out/`。GitHub Actions 工作流 `.github/workflo
 | 路由 | 内容 |
 | --- | --- |
 | `/` | 首页、积分榜摘要和最近/下一场比赛 |
-| `/drivers`、`/drivers/[driverId]` | 车手列表与赛季详情 |
-| `/teams`、`/teams/[teamId]` | 车队列表与车队详情 |
-| `/races`、`/races/[round]` | 赛历与比赛周末详情 |
-| `/compare` | 车手/车队对比和冠军情景模拟 |
+| `/<year>` | 赛季首页、积分榜摘要和比赛状态 |
+| `/<year>/drivers`、`/<year>/drivers/[driverId]` | 车手列表与赛季详情 |
+| `/<year>/teams`、`/<year>/teams/[teamId]` | 车队列表与车队详情 |
+| `/<year>/races`、`/<year>/races/[round]` | 赛历与比赛周末详情 |
+| `/<year>/compare` | 车手/车队对比和冠军情景模拟 |
 | `/tools` | 计算器目录 |
 | `/tools/points-calculator` | 正赛和冲刺赛积分计算器 |
 | `/tools/lap-time-calculator` | 圈速差计算器 |
@@ -55,4 +56,4 @@ Next.js 静态导出生成在 `out/`。GitHub Actions 工作流 `.github/workflo
 
 ## 数据
 
-页面使用仓库中的静态 JSON 数据，不会在每次访问时实时请求外部 API。数据读取逻辑位于 `lib/f1.ts`，数据快照和来源/更新时间元数据位于 `data/`。更新赛季数据时，需一并更新相应 JSON 文件和 `data/meta.json`。
+页面使用仓库中的静态 JSON 数据，不会在每次访问时实时请求外部 API。数据读取逻辑位于 `lib/f1.ts`，每个赛季的数据快照和来源/更新时间元数据放在 `data/<year>/`。年份选择器和静态赛季路由会根据这些目录自动生成；新增年份时，添加该目录及积分榜、赛程和各轮比赛 JSON 文件即可。

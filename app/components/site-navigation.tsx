@@ -3,10 +3,13 @@
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import { useText, Text } from "@/app/components/language";
 
-export function SiteNavigation() {
+export function SiteNavigation({ defaultYear }: { defaultYear: string }) {
   const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname() ?? "/";
+  const year = pathname.match(/^\/(\d{4})(?:\/|$)/)?.[1] ?? defaultYear;
   const text = useText();
   const closeMenu = () => setIsOpen(false);
 
@@ -27,16 +30,16 @@ export function SiteNavigation() {
         )}
       </button>
       <nav className={`site-links${isOpen ? " is-open" : ""}`} id="site-links">
-        <Link href="/drivers" onClick={closeMenu}>
+        <Link href={`/${year}/drivers`} onClick={closeMenu}>
           <Text id="drivers" />
         </Link>
-        <Link href="/teams" onClick={closeMenu}>
+        <Link href={`/${year}/teams`} onClick={closeMenu}>
           <Text id="teams" />
         </Link>
-        <Link href="/races" onClick={closeMenu}>
+        <Link href={`/${year}/races`} onClick={closeMenu}>
           <Text id="races" />
         </Link>
-        <Link href="/compare" onClick={closeMenu}>
+        <Link href={`/${year}/compare`} onClick={closeMenu}>
           <Text id="compare" />
         </Link>
         <Link href="/tools" onClick={closeMenu}>

@@ -1,13 +1,14 @@
 import { ComparisonHub } from "@/app/components/comparison-hub";
 import { Text } from "@/app/components/language";
-import {
-  constructorStandings,
-  driverStandings,
-  schedule,
-} from "@/lib/f1";
+import { constructorStandings, driverStandings, schedule } from "@/lib/f1";
 
-export default function Compare() {
-  const remaining = schedule().filter(
+export default async function Compare({
+  params,
+}: {
+  params: Promise<{ year: string }>;
+}) {
+  const { year } = await params;
+  const remaining = schedule(year).filter(
     (race) => new Date(`${race.date}T23:59:59Z`) >= new Date(),
   );
   return (
@@ -22,9 +23,10 @@ export default function Compare() {
         <Text id="compareLead" />
       </p>
       <ComparisonHub
-        drivers={driverStandings()}
-        teams={constructorStandings()}
+        drivers={driverStandings(year)}
+        teams={constructorStandings(year)}
         races={remaining}
+        year={year}
       />
     </main>
   );

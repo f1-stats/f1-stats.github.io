@@ -2,15 +2,20 @@ import Link from "next/link";
 import { Text } from "@/app/components/language";
 import { TeamIdentity } from "@/app/components/team-identity";
 import { constructorStandings } from "@/lib/f1";
-export default function TeamsPage() {
-  const rows = constructorStandings();
+export default async function TeamsPage({
+  params,
+}: {
+  params: Promise<{ year: string }>;
+}) {
+  const { year } = await params;
+  const rows = constructorStandings(year);
   return (
     <main className="page">
       <h1>
         <Text id="f1Teams" />
       </h1>
       <p className="lead">
-        <Text id="teamsLead" />
+        {year} · <Text id="teamsLead" />
       </p>
       <div className="table">
         <div className="thead">
@@ -31,7 +36,7 @@ export default function TeamsPage() {
           <Link
             className="tr"
             key={r.Constructor.constructorId}
-            href={`/teams/${r.Constructor.constructorId}`}
+            href={`/${year}/teams/${r.Constructor.constructorId}`}
           >
             <span>{r.position}</span>
             <span className="strong">

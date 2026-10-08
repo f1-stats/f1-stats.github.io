@@ -25,7 +25,11 @@ function nameOf(driver: Driver) {
   return `${driver.Driver.givenName} ${driver.Driver.familyName}`;
 }
 
-export function startingFinish(position: string, roundIndex: number, points: number[]) {
+export function startingFinish(
+  position: string,
+  roundIndex: number,
+  points: number[],
+) {
   const standingPosition = Number(position);
   const base = Number.isFinite(standingPosition) ? standingPosition - 1 : 0;
   const varied = base + finishVariation[roundIndex % finishVariation.length];
@@ -84,10 +88,26 @@ export function ChampionshipSimulator({
         races.map((race, index) => [
           race.round,
           {
-            driverRace: startingFinish(driver?.position ?? "1", index, racePoints),
-            rivalRace: startingFinish(rival?.position ?? "2", index + 1, racePoints),
-            driverSprint: startingFinish(driver?.position ?? "1", index, sprintPoints),
-            rivalSprint: startingFinish(rival?.position ?? "2", index + 1, sprintPoints),
+            driverRace: startingFinish(
+              driver?.position ?? "1",
+              index,
+              racePoints,
+            ),
+            rivalRace: startingFinish(
+              rival?.position ?? "2",
+              index + 1,
+              racePoints,
+            ),
+            driverSprint: startingFinish(
+              driver?.position ?? "1",
+              index,
+              sprintPoints,
+            ),
+            rivalSprint: startingFinish(
+              rival?.position ?? "2",
+              index + 1,
+              sprintPoints,
+            ),
           },
         ]),
       ) as Record<string, ScenarioFinish>,
@@ -96,7 +116,11 @@ export function ChampionshipSimulator({
   if (!driver || !rival)
     return <div className="empty">Standings data is not available yet.</div>;
 
-  function updateFinish(round: string, key: keyof ScenarioFinish, value: number) {
+  function updateFinish(
+    round: string,
+    key: keyof ScenarioFinish,
+    value: number,
+  ) {
     setFinishes((current) => ({
       ...current,
       [round]: { ...current[round], [key]: value },
@@ -123,7 +147,8 @@ export function ChampionshipSimulator({
   const driverMaximum =
     Number(driver.points) +
     races.reduce(
-      (total, race) => total + racePoints[0] + (race.Sprint ? sprintPoints[0] : 0),
+      (total, race) =>
+        total + racePoints[0] + (race.Sprint ? sprintPoints[0] : 0),
       0,
     );
   const gap = projected.driver - projected.rival;
@@ -142,14 +167,18 @@ export function ChampionshipSimulator({
       <div className="scenario-section-heading">
         <Text id="raceByRaceScenario" />
       </div>
-      <p className="scenario-defaults"><Text id="scenarioDefaults" /></p>
+      <p className="scenario-defaults">
+        <Text id="scenarioDefaults" />
+      </p>
       <div className="scenario-list">
         {races.map((race) => {
           const finish = finishes[race.round];
           return (
             <div className="scenario-weekend" key={race.round}>
               <div className="scenario-weekend-heading">
-                <span><Text id="round" /> {race.round}</span>
+                <span>
+                  <Text id="round" /> {race.round}
+                </span>
                 <h3>{race.raceName}</h3>
               </div>
               <div className="scenario-drivers">
@@ -157,23 +186,51 @@ export function ChampionshipSimulator({
                   <h4>{nameOf(driver)}</h4>
                   <label>
                     <Text id="expectedRaceFinish" />
-                    <PointsSelect value={finish.driverRace} onChange={(value) => updateFinish(race.round, "driverRace", value)} points={racePoints} />
+                    <PointsSelect
+                      value={finish.driverRace}
+                      onChange={(value) =>
+                        updateFinish(race.round, "driverRace", value)
+                      }
+                      points={racePoints}
+                    />
                   </label>
-                  {race.Sprint && <label>
-                    <Text id="expectedSprintFinish" />
-                    <PointsSelect value={finish.driverSprint} onChange={(value) => updateFinish(race.round, "driverSprint", value)} points={sprintPoints} />
-                  </label>}
+                  {race.Sprint && (
+                    <label>
+                      <Text id="expectedSprintFinish" />
+                      <PointsSelect
+                        value={finish.driverSprint}
+                        onChange={(value) =>
+                          updateFinish(race.round, "driverSprint", value)
+                        }
+                        points={sprintPoints}
+                      />
+                    </label>
+                  )}
                 </div>
                 <div className="scenario-driver">
                   <h4>{nameOf(rival)}</h4>
                   <label>
                     <Text id="expectedRaceFinish" />
-                    <PointsSelect value={finish.rivalRace} onChange={(value) => updateFinish(race.round, "rivalRace", value)} points={racePoints} />
+                    <PointsSelect
+                      value={finish.rivalRace}
+                      onChange={(value) =>
+                        updateFinish(race.round, "rivalRace", value)
+                      }
+                      points={racePoints}
+                    />
                   </label>
-                  {race.Sprint && <label>
-                    <Text id="expectedSprintFinish" />
-                    <PointsSelect value={finish.rivalSprint} onChange={(value) => updateFinish(race.round, "rivalSprint", value)} points={sprintPoints} />
-                  </label>}
+                  {race.Sprint && (
+                    <label>
+                      <Text id="expectedSprintFinish" />
+                      <PointsSelect
+                        value={finish.rivalSprint}
+                        onChange={(value) =>
+                          updateFinish(race.round, "rivalSprint", value)
+                        }
+                        points={sprintPoints}
+                      />
+                    </label>
+                  )}
                 </div>
               </div>
             </div>

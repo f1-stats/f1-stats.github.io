@@ -1,6 +1,6 @@
 # F1 Stats
 
-F1 Stats is a bilingual Formula 1 statistics and tools website featuring 2026 season standings, race schedules and results, driver and team comparisons, and interactive calculators.
+F1 Stats is a bilingual Formula 1 statistics and tools website featuring season standings, race schedules and results, driver and team comparisons, and interactive calculators.
 
 ## Features
 
@@ -49,10 +49,11 @@ Next.js writes the static export to `out/`. The GitHub Actions workflow at `.git
 | Route                             | Description                                                   |
 | --------------------------------- | ------------------------------------------------------------- |
 | `/`                               | Home page with standings highlights and recent/upcoming races |
-| `/drivers`, `/drivers/[driverId]` | Driver standings and season details                           |
-| `/teams`, `/teams/[teamId]`       | Constructor standings and team details                        |
-| `/races`, `/races/[round]`        | Race calendar and weekend details                             |
-| `/compare`                        | Driver/team comparisons and championship scenarios            |
+| `/<year>`                         | Season home, standings highlights, and race status             |
+| `/<year>/drivers`, `/<year>/drivers/[driverId]` | Driver standings and season details       |
+| `/<year>/teams`, `/<year>/teams/[teamId]`       | Constructor standings and team details    |
+| `/<year>/races`, `/<year>/races/[round]`        | Race calendar and weekend details         |
+| `/<year>/compare`                 | Driver/team comparisons and championship scenarios            |
 | `/tools`                          | Calculator directory                                          |
 | `/tools/points-calculator`        | Grand Prix and Sprint points calculator                       |
 | `/tools/lap-time-calculator`      | Lap-time delta calculator                                     |
@@ -61,4 +62,4 @@ Next.js writes the static export to `out/`. The GitHub Actions workflow at `.git
 
 ## Data
 
-Pages read static JSON snapshots and do not fetch live data from an external API on each visit. Data access helpers are in `lib/f1.ts`; snapshots and source/update metadata are in `data/`. The updater fills results, qualifying, and Sprint snapshots for completed races when the API has published them; empty API responses never replace existing data.
+Pages read static JSON snapshots and do not fetch live data from an external API on each visit. Each season's snapshots and metadata live in `data/<year>/`; the year selector and static season routes are generated from those directories. Add a season directory with the standings, schedule, and per-round JSON files to make that season available.

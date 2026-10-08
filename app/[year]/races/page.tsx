@@ -3,19 +3,28 @@ import { Text } from "@/app/components/language";
 import { RaceWeekend } from "@/app/components/race-weekend";
 import { schedule } from "@/lib/f1";
 
-export default function RacesPage() {
-  const races = schedule();
+export default async function RacesPage({
+  params,
+}: {
+  params: Promise<{ year: string }>;
+}) {
+  const { year } = await params;
+  const races = schedule(year);
   return (
     <main className="page">
       <h1>
-        <Text id="calendarTitle" />
+        {year} <Text id="calendarTitle" />
       </h1>
       <p className="lead">
         <Text id="calendarLead" /> <Text id="allTimesUtc" />
       </p>
       <div className="racegrid">
         {races.map((race: any) => (
-          <Link href={`/races/${race.round}`} className="race" key={race.round}>
+          <Link
+            href={`/${year}/races/${race.round}`}
+            className="race"
+            key={race.round}
+          >
             <span>
               <Text id="round" /> {race.round}
             </span>

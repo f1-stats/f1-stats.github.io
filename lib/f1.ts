@@ -35,17 +35,33 @@ export type Race = {
   Results?: any[];
 };
 
-function read<T>(name: string, fallback: T): T {
+export function currentSeason(): string {
+  return String(new Date().getFullYear());
+}
+
+export function availableSeasons(): string[] {
+  try {
+    return fs
+      .readdirSync(path.join(process.cwd(), "data"), { withFileTypes: true })
+      .filter((entry) => entry.isDirectory() && /^\d{4}$/.test(entry.name))
+      .map((entry) => entry.name)
+      .sort((a, b) => Number(b) - Number(a));
+  } catch {
+    return [];
+  }
+}
+
+function read<T>(year: string, name: string, fallback: T): T {
   try {
     return JSON.parse(
-      fs.readFileSync(path.join(process.cwd(), "data", name), "utf8"),
+      fs.readFileSync(path.join(process.cwd(), "data", year, name), "utf8"),
     ) as T;
   } catch {
     return fallback;
   }
 }
-export function driverStandings(): DriverStanding[] {
-  const d: any = read<any>("driver-standings.json", {
+export function driverStandings(year = currentSeason()): DriverStanding[] {
+  const d: any = read<any>(year, "driver-standings.json", {
     MRData: { StandingsTable: { StandingsLists: [{ DriverStandings: [] }] } },
   });
   return (
@@ -54,8 +70,10 @@ export function driverStandings(): DriverStanding[] {
     []
   );
 }
-export function constructorStandings(): ConstructorStanding[] {
-  const d: any = read<any>("constructor-standings.json", {
+export function constructorStandings(
+  year = currentSeason(),
+): ConstructorStanding[] {
+  const d: any = read<any>(year, "constructor-standings.json", {
     MRData: {
       StandingsTable: { StandingsLists: [{ ConstructorStandings: [] }] },
     },
@@ -66,14 +84,14 @@ export function constructorStandings(): ConstructorStanding[] {
     []
   );
 }
-export function schedule(): Race[] {
-  const d: any = read<any>("schedule.json", {
+export function schedule(year = currentSeason()): Race[] {
+  const d: any = read<any>(year, "schedule.json", {
     MRData: { RaceTable: { Races: [] } },
   });
   return d.RaceTable?.Races ?? d.MRData?.RaceTable?.Races ?? [];
 }
-export function results(round: string): any[] {
-  const d: any = read<any>(`round-${round}-results.json`, {
+export function results(round: string, year = currentSeason()): any[] {
+  const d: any = read<any>(year, `round-${round}-results.json`, {
     MRData: { RaceTable: { Races: [] } },
   });
   return (
@@ -82,8 +100,13 @@ export function results(round: string): any[] {
     []
   );
 }
-function roundRows(round: string, name: string, key: string): any[] {
-  const d: any = read<any>(`round-${round}-${name}.json`, {
+function roundRows(
+  round: string,
+  name: string,
+  key: string,
+  year: string,
+): any[] {
+  const d: any = read<any>(year, `round-${round}-${name}.json`, {
     RaceTable: { Races: [] },
   });
   return (
@@ -92,11 +115,14 @@ function roundRows(round: string, name: string, key: string): any[] {
     []
   );
 }
-export function qualifyingResults(round: string): any[] {
-  return roundRows(round, "qualifying", "QualifyingResults");
+export function qualifyingResults(
+  round: string,
+  year = currentSeason(),
+): any[] {
+  return roundRows(round, "qualifying", "QualifyingResults", year);
 }
-export function sprintResults(round: string): any[] {
-  return roundRows(round, "sprint", "SprintResults");
+export function sprintResults(round: string, year = currentSeason()): any[] {
+  return roundRows(round, "sprint", "SprintResults", year);
 }
 export function displayName(d: DriverStanding["Driver"]) {
   return `${d.givenName} ${d.familyName}`;

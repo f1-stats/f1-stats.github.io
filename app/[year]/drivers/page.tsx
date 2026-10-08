@@ -2,15 +2,20 @@ import Link from "next/link";
 import { Text } from "@/app/components/language";
 import { TeamIdentity } from "@/app/components/team-identity";
 import { driverStandings, displayName } from "@/lib/f1";
-export default function DriversPage() {
-  const rows = driverStandings();
+export default async function DriversPage({
+  params,
+}: {
+  params: Promise<{ year: string }>;
+}) {
+  const { year } = await params;
+  const rows = driverStandings(year);
   return (
     <main className="page">
       <h1>
         <Text id="f1Drivers" />
       </h1>
       <p className="lead">
-        <Text id="driversLead" />
+        {year} · <Text id="driversLead" />
       </p>
       <div className="table">
         <div className="thead">
@@ -31,7 +36,7 @@ export default function DriversPage() {
           <Link
             className="tr"
             key={r.Driver.driverId}
-            href={`/drivers/${r.Driver.driverId}`}
+            href={`/${year}/drivers/${r.Driver.driverId}`}
           >
             <span>{r.position}</span>
             <span className="strong">{displayName(r.Driver)}</span>

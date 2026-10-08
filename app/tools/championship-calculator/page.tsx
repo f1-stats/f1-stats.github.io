@@ -7,15 +7,16 @@ import { Text } from "@/app/components/language";
 
 export default function Championship() {
   const router = useRouter();
+  const compareHref = `/${new Date().getFullYear()}/compare`;
 
   useEffect(() => {
-    router.replace("/compare");
-  }, [router]);
+    router.replace(compareHref);
+  }, [compareHref, router]);
 
   return (
     <main className="page">
       <p className="lead">
-        <Link href="/compare">
+        <Link href={compareHref}>
           <Text id="compareTitle" />
         </Link>
       </p>

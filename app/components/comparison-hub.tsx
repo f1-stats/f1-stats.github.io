@@ -4,11 +4,7 @@ import { useState } from "react";
 import { Text, useText } from "@/app/components/language";
 import { DriverComparison } from "@/app/components/driver-comparison";
 import { TeamComparison } from "@/app/components/team-comparison";
-import type {
-  ConstructorStanding,
-  DriverStanding,
-  Race,
-} from "@/lib/f1";
+import type { ConstructorStanding, DriverStanding, Race } from "@/lib/f1";
 
 type ComparisonMode = "drivers" | "teams";
 
@@ -16,17 +12,23 @@ export function ComparisonHub({
   drivers,
   teams,
   races,
+  year,
 }: {
   drivers: DriverStanding[];
   teams: ConstructorStanding[];
   races: Race[];
+  year: string;
 }) {
   const [mode, setMode] = useState<ComparisonMode>("drivers");
   const text = useText();
 
   return (
     <>
-      <div className="comparison-mode" role="group" aria-label={text.comparisonType}>
+      <div
+        className="comparison-mode"
+        role="group"
+        aria-label={text.comparisonType}
+      >
         <button
           type="button"
           aria-pressed={mode === "drivers"}
@@ -44,9 +46,14 @@ export function ComparisonHub({
       </div>
       <div className="comparison-mode-panel">
         {mode === "drivers" ? (
-          <DriverComparison drivers={drivers} races={races} />
+          <DriverComparison drivers={drivers} races={races} year={year} />
         ) : (
-          <TeamComparison teams={teams} drivers={drivers} races={races} />
+          <TeamComparison
+            teams={teams}
+            drivers={drivers}
+            races={races}
+            year={year}
+          />
         )}
       </div>
     </>

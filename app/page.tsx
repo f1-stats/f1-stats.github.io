@@ -3,16 +3,17 @@ import { ArrowRight } from "lucide-react";
 import { Text } from "@/app/components/language";
 import { TeamIdentity } from "@/app/components/team-identity";
 import {
+  currentSeason,
   driverStandings,
   constructorStandings,
   schedule,
   displayName,
 } from "@/lib/f1";
 
-export default function Home() {
-  const drivers = driverStandings().slice(0, 8),
-    teams = constructorStandings().slice(0, 5),
-    races = schedule();
+export function HomeContent({ year }: { year: string }) {
+  const drivers = driverStandings(year).slice(0, 8),
+    teams = constructorStandings(year).slice(0, 5),
+    races = schedule(year);
   const next = races.find(
     (r: any) => new Date(r.date + "T23:59:59") >= new Date(),
   );
@@ -24,7 +25,7 @@ export default function Home() {
       <section className="hero">
         <div className="wrap">
           <div className="eyebrow">
-            <Text id="heroEyebrow" />
+            <Text id="heroEyebrow" /> · {year}
           </div>
           <h1>
             <Text id="heroTitle" />
@@ -37,10 +38,10 @@ export default function Home() {
             <Text id="heroDescription" />
           </p>
           <div className="actions">
-            <Link className="button" href="/drivers">
+            <Link className="button" href={`/${year}/drivers`}>
               <Text id="driverStandings" />
             </Link>
-            <Link className="button ghost" href="/races">
+            <Link className="button ghost" href={`/${year}/races`}>
               <Text id="raceCalendar" />
             </Link>
           </div>
@@ -57,7 +58,7 @@ export default function Home() {
                 <Text id="driverStandings" />
               </h2>
             </div>
-            <Link className="link-icon" href="/drivers">
+            <Link className="link-icon" href={`/${year}/drivers`}>
               <Text id="viewAll" /> <ArrowRight aria-hidden="true" size={16} />
             </Link>
           </div>
@@ -66,7 +67,7 @@ export default function Home() {
               <Link
                 className="tr"
                 key={d.Driver.driverId}
-                href={`/drivers/${d.Driver.driverId}`}
+                href={`/${year}/drivers/${d.Driver.driverId}`}
               >
                 <span>{String(d.position).padStart(2, "0")}</span>
                 <span className="strong">{displayName(d.Driver)}</span>
@@ -93,7 +94,7 @@ export default function Home() {
                 <Text id="teamStandings" />
               </h2>
             </div>
-            <Link className="link-icon" href="/teams">
+            <Link className="link-icon" href={`/${year}/teams`}>
               <Text id="viewAll" /> <ArrowRight aria-hidden="true" size={16} />
             </Link>
           </div>
@@ -101,7 +102,7 @@ export default function Home() {
             {teams.map((t: any) => (
               <Link
                 className="team"
-                href={`/teams/${t.Constructor.constructorId}`}
+                href={`/${year}/teams/${t.Constructor.constructorId}`}
                 key={t.Constructor.constructorId}
               >
                 <b>{t.Constructor.name}</b>
@@ -131,7 +132,7 @@ export default function Home() {
               <p>{last?.date ?? "—"}</p>
               <Link
                 className="link-icon"
-                href={last ? "/races/" + last.round : "/races"}
+                href={last ? `/${year}/races/${last.round}` : `/${year}/races`}
               >
                 <Text id="raceDetails" />{" "}
                 <ArrowRight aria-hidden="true" size={16} />
@@ -145,7 +146,7 @@ export default function Home() {
               <p>{next?.date ?? "—"}</p>
               <Link
                 className="link-icon"
-                href={next ? "/races/" + next.round : "/races"}
+                href={next ? `/${year}/races/${next.round}` : `/${year}/races`}
               >
                 <Text id="weekendDetails" />{" "}
                 <ArrowRight aria-hidden="true" size={16} />
@@ -156,4 +157,8 @@ export default function Home() {
       </div>
     </main>
   );
+}
+
+export default function Home() {
+  return <HomeContent year={currentSeason()} />;
 }
