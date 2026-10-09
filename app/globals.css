@@ -545,6 +545,7 @@ footer a:hover {
   font-size: 11px;
 }
 .race-points-trend-scroll {
+  position: relative;
   overflow-x: auto;
   margin-top: 14px;
 }
@@ -554,6 +555,7 @@ footer a:hover {
   min-width: 620px;
   height: auto;
   overflow: visible;
+  pointer-events: all;
 }
 .race-points-trend-svg text {
   fill: var(--muted);
@@ -583,6 +585,353 @@ footer a:hover {
   height: 9px;
   flex: 0 0 9px;
   border-radius: 50%;
+}
+.race-analysis {
+  max-width: 960px;
+  margin: 32px auto 0;
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--surface);
+}
+.analysis-page > .race-analysis {
+  margin-top: 32px;
+}
+.analysis-selector {
+  display: grid;
+  grid-template-columns: minmax(130px, 0.55fr) minmax(260px, 1.45fr) auto;
+  align-items: end;
+  gap: 12px;
+  max-width: 960px;
+  margin: 28px 0 0;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.analysis-selector label {
+  display: grid;
+  min-width: 0;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+}
+.analysis-selector select {
+  width: 100%;
+  min-width: 0;
+  min-height: 42px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--input);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+}
+.analysis-selector .button {
+  display: inline-flex;
+  min-height: 42px;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.analysis-selector .button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.analysis-selector-empty,
+.analysis-page-unavailable {
+  max-width: 960px;
+  margin: 20px 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+.race-analysis-heading,
+.race-analysis-pit-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+.race-analysis-heading h2,
+.race-analysis-pit-heading h3 {
+  margin: 0;
+  font-size: 20px;
+}
+.race-analysis-heading p {
+  margin: 7px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.race-analysis-driver-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.race-analysis-driver-controls select {
+  min-width: 180px;
+  padding: 8px 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--input);
+  color: var(--text);
+  font: inherit;
+}
+.race-analysis-add-driver {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--surface-raised);
+  color: var(--text);
+  font: inherit;
+  cursor: pointer;
+}
+.race-analysis-add-driver:hover:not(:disabled) {
+  border-color: var(--hover-line);
+}
+.race-analysis-add-driver:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.race-analysis-selected-drivers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 12px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.race-analysis-selected-drivers li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 3px 5px 3px 9px;
+  border: 1px solid var(--line);
+  border-radius: 3px;
+  background: var(--panel);
+  color: var(--text);
+  font-size: 11px;
+}
+.race-analysis-selected-drivers li small {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 500;
+}
+.race-analysis-selected-drivers button {
+  display: inline-flex;
+  width: 22px;
+  height: 22px;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+.race-analysis-selected-drivers button:hover:not(:disabled) {
+  background: var(--row-hover);
+  color: var(--text);
+}
+.race-analysis-selected-drivers button:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.race-analysis-summary-scroll {
+  margin-top: 16px;
+}
+.race-analysis-metrics {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1px;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  background: var(--line);
+}
+.race-analysis-metrics > div {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 12px 14px;
+  background: var(--panel);
+}
+.race-analysis-metrics span {
+  color: var(--muted);
+  font-size: 11px;
+}
+.race-analysis-metrics strong {
+  font-size: 17px;
+  font-variant-numeric: tabular-nums;
+}
+.race-analysis-chart-scroll,
+.race-analysis-table-scroll {
+  overflow-x: auto;
+}
+.race-analysis-chart-scroll {
+  position: relative;
+  margin-top: 14px;
+}
+.race-analysis-chart-tooltip {
+  position: absolute;
+  z-index: 3;
+  width: min(244px, calc(100% - 16px));
+  max-height: 210px;
+  overflow: auto;
+  padding: 9px 11px;
+  border: 1px solid var(--muted);
+  border-radius: 4px;
+  background: var(--surface);
+  box-shadow: 0 6px 20px #0008;
+  color: var(--text);
+  pointer-events: none;
+}
+.race-analysis-chart-tooltip > strong {
+  display: block;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12px;
+}
+.race-analysis-chart-tooltip ul {
+  display: grid;
+  gap: 5px;
+  margin: 7px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.race-analysis-chart-tooltip li,
+.race-analysis-chart-tooltip li span {
+  display: flex;
+  align-items: center;
+}
+.race-analysis-chart-tooltip li {
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 11px;
+}
+.race-analysis-chart-tooltip li span {
+  min-width: 0;
+  gap: 7px;
+  color: var(--secondary);
+}
+.race-analysis-chart-tooltip li span i {
+  width: 7px;
+  height: 7px;
+  flex: 0 0 7px;
+  border-radius: 50%;
+}
+.race-analysis-chart-tooltip li b {
+  flex: 0 0 auto;
+  font-size: 11px;
+  font-variant-numeric: tabular-nums;
+}
+.race-analysis-chart-tooltip .race-analysis-chart-tooltip-detail {
+  padding-left: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+}
+.race-analysis-chart-tooltip .race-analysis-chart-tooltip-detail span {
+  font-size: 10px;
+}
+.race-analysis-chart {
+  display: block;
+  width: 100%;
+  min-width: 620px;
+  height: auto;
+  pointer-events: all;
+}
+.race-analysis-chart text {
+  fill: var(--muted);
+  font:
+    11px "Aptos",
+    Bahnschrift,
+    "Segoe UI",
+    sans-serif;
+}
+.race-analysis-chart-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.race-analysis-chart-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.race-analysis-chart-legend-mark {
+  width: 18px;
+  height: 0;
+  border-top-width: 2px;
+}
+.race-analysis-chart .race-analysis-axis-label {
+  font-weight: 700;
+}
+.race-analysis-pit-heading {
+  margin-top: 22px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.race-analysis-pit-heading h3 {
+  font-size: 16px;
+}
+.race-analysis-pit-heading span {
+  color: var(--muted);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.race-analysis-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 12px;
+}
+.race-analysis-table th,
+.race-analysis-table td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--line);
+  white-space: nowrap;
+}
+.race-analysis-table th {
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.race-analysis-table td:last-child {
+  font-variant-numeric: tabular-nums;
+}
+.race-analysis-team-driver {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.race-analysis-team-swatch {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+}
+.race-analysis-empty {
+  margin: 16px 0 0;
+  color: var(--muted);
+  font-size: 13px;
 }
 .detail-page > .session-list {
   max-width: 960px;
@@ -1231,6 +1580,9 @@ footer a:hover {
   margin: 0;
 }
 @media (max-width: 800px) {
+  .analysis-selector {
+    grid-template-columns: minmax(0, 1fr);
+  }
   .hero .wrap {
     padding-top: 68px;
     padding-bottom: 68px;

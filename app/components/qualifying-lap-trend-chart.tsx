@@ -1,3 +1,6 @@
+"use client";
+
+import { useState } from "react";
 import { Text } from "@/app/components/language";
 
 type QualifyingDriver = {
@@ -24,6 +27,11 @@ export function QualifyingLapTrendChart({
 }: {
   drivers: QualifyingDriver[];
 }) {
+  const [hover, setHover] = useState<{
+    index: number;
+    left: number;
+    top: number;
+  } | null>(null);
   const plotWidth = chartWidth - chartMargin.left - chartMargin.right;
   const plotHeight = chartHeight - chartMargin.top - chartMargin.bottom;
   const lapTimes = drivers.map((driver) => driver.time);
@@ -66,6 +74,56 @@ export function QualifyingLapTrendChart({
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
           role="img"
           aria-label="Qualifying lap time by driver in this race"
+          onPointerMove={(event) => {
+            const svg = event.currentTarget;
+            const transform = svg.getScreenCTM();
+            if (!transform) return;
+
+            const cursor = svg.createSVGPoint();
+            cursor.x = event.clientX;
+            cursor.y = event.clientY;
+            const chartPoint = cursor.matrixTransform(transform.inverse());
+            if (
+              chartPoint.x < chartMargin.left ||
+              chartPoint.x > chartWidth - chartMargin.right ||
+              chartPoint.y < chartMargin.top ||
+              chartPoint.y > chartHeight - chartMargin.bottom
+            ) {
+              setHover(null);
+              return;
+            }
+
+            const index = Math.max(
+              0,
+              Math.min(
+                drivers.length - 1,
+                Math.round(
+                  ((chartPoint.x - chartMargin.left) / plotWidth) *
+                    Math.max(0, drivers.length - 1),
+                ),
+              ),
+            );
+            const bounds = svg.getBoundingClientRect();
+            const scrollArea = svg.parentElement;
+            const scrollLeft = scrollArea?.scrollLeft ?? 0;
+            const availableWidth = scrollArea?.clientWidth ?? bounds.width;
+            const tooltipWidth = 244;
+            const pointerLeft = event.clientX - bounds.left;
+            const preferredLeft =
+              availableWidth - pointerLeft < tooltipWidth + 20
+                ? pointerLeft - tooltipWidth - 12
+                : pointerLeft + 12;
+            const maxLeft = Math.max(8, availableWidth - tooltipWidth - 8);
+            setHover({
+              index,
+              left: scrollLeft + Math.max(8, Math.min(preferredLeft, maxLeft)),
+              top: Math.max(
+                8,
+                Math.min(event.clientY - bounds.top - 42, bounds.height - 86),
+              ),
+            });
+          }}
+          onPointerLeave={() => setHover(null)}
         >
           {ticks.map((tick) => (
             <g key={tick}>
@@ -115,7 +173,46 @@ export function QualifyingLapTrendChart({
               <title>{`${driver.name} · ${driver.session}: ${formatLapTime(driver.time)}`}</title>
             </circle>
           ))}
+          {hover && (
+            <g pointerEvents="none">
+              <line
+                x1={x(hover.index)}
+                x2={x(hover.index)}
+                y1={chartMargin.top}
+                y2={chartHeight - chartMargin.bottom}
+                stroke="var(--text)"
+                strokeOpacity="0.78"
+                strokeWidth="1.5"
+              />
+              <circle
+                cx={x(hover.index)}
+                cy={y(drivers[hover.index].time)}
+                r="6"
+                fill={drivers[hover.index].color}
+                stroke="var(--surface)"
+                strokeWidth="2"
+              />
+            </g>
+          )}
         </svg>
+        {hover && (
+          <div
+            className="race-analysis-chart-tooltip"
+            role="tooltip"
+            style={{ left: hover.left, top: hover.top }}
+          >
+            <strong>{`${drivers[hover.index].code} · ${drivers[hover.index].name}`}</strong>
+            <ul>
+              <li>
+                <span>
+                  <i style={{ backgroundColor: drivers[hover.index].color }} />
+                  {drivers[hover.index].teamName}
+                </span>
+                <b>{`${drivers[hover.index].session} · ${formatLapTime(drivers[hover.index].time)}`}</b>
+              </li>
+            </ul>
+          </div>
+        )}
       </div>
       <ul className="race-points-trend-legend">
         {teams.map(([teamName, color]) => (

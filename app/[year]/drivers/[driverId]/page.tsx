@@ -42,13 +42,23 @@ export default async function DriverPage({
         raceName: race.raceName,
       })),
   );
-  const pointsByRound = all.map((result: any) => ({
-    code: `R${result.round}`,
-    name: result.raceName,
-    points: Number(result.points ?? 0),
-    color: teamColor(result.Constructor?.constructorId),
-    teamName: result.Constructor?.name ?? "Unknown team",
-  }));
+  const pointsByRound = all.map((result: any) => {
+    const fastestLapSpeed = Number(result.FastestLap?.AverageSpeed?.speed);
+    return {
+      code: `R${result.round}`,
+      name: result.raceName,
+      points: Number(result.points ?? 0),
+      color: teamColor(result.Constructor?.constructorId),
+      teamName: result.Constructor?.name ?? "Unknown team",
+      fastestLapAverageSpeed: Number.isFinite(fastestLapSpeed)
+        ? fastestLapSpeed
+        : undefined,
+      fastestLapSpeedUnits:
+        result.FastestLap?.AverageSpeed?.units === "kph"
+          ? "km/h"
+          : result.FastestLap?.AverageSpeed?.units,
+    };
+  });
 
   return (
     <main className="page detail-page">

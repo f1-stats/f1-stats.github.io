@@ -1,10 +1,18 @@
 import Image from "next/image";
-import { circuitImage, qualifyingResults, results, schedule, sprintResults } from "@/lib/f1";
+import {
+  circuitImage,
+  qualifyingResults,
+  raceAnalysis,
+  results,
+  schedule,
+  sprintResults,
+} from "@/lib/f1";
 import { TeamIdentity, teamColor } from "@/app/components/team-identity";
 import { RaceWeekend } from "@/app/components/race-weekend";
 import { Text } from "@/app/components/language";
 import { RacePointsTrendChart } from "@/app/components/race-points-trend-chart";
 import { QualifyingLapTrendChart } from "@/app/components/qualifying-lap-trend-chart";
+import { RaceAnalysis } from "@/app/components/race-analysis";
 
 function parseLapTime(value: string | undefined): number | null {
   if (!value) return null;
@@ -39,6 +47,7 @@ export default async function RacePage({
   const { year, round } = await params;
   const race = schedule(year).find((r) => r.round === round);
   const rows = results(round, year);
+  const analysis = raceAnalysis(round, year);
   const qualifying = qualifyingResults(round, year);
   const sprint = sprintResults(round, year);
   const qualifyingLapDrivers = qualifying.flatMap((row: any) => {
@@ -56,13 +65,23 @@ export default async function RacePage({
       },
     ];
   });
-  const racePointDrivers = rows.map((row: any) => ({
-    code: row.Driver.code ?? row.Driver.familyName.slice(0, 3).toUpperCase(),
-    name: `${row.Driver.givenName} ${row.Driver.familyName}`,
-    points: Number(row.points ?? 0),
-    color: teamColor(row.Constructor?.constructorId),
-    teamName: row.Constructor?.name ?? "Unknown team",
-  }));
+  const racePointDrivers = rows.map((row: any) => {
+    const fastestLapSpeed = Number(row.FastestLap?.AverageSpeed?.speed);
+    return {
+      code: row.Driver.code ?? row.Driver.familyName.slice(0, 3).toUpperCase(),
+      name: `${row.Driver.givenName} ${row.Driver.familyName}`,
+      points: Number(row.points ?? 0),
+      color: teamColor(row.Constructor?.constructorId),
+      teamName: row.Constructor?.name ?? "Unknown team",
+      fastestLapAverageSpeed: Number.isFinite(fastestLapSpeed)
+        ? fastestLapSpeed
+        : undefined,
+      fastestLapSpeedUnits:
+        row.FastestLap?.AverageSpeed?.units === "kph"
+          ? "km/h"
+          : row.FastestLap?.AverageSpeed?.units,
+    };
+  });
 
   if (!race)
     return (
@@ -213,6 +232,37 @@ export default async function RacePage({
             <RacePointsTrendChart drivers={racePointDrivers} />
           )}
         </>
+      )}
+      {rows.length > 0 && analysis && (
+        <RaceAnalysis
+          year={year}
+          round={round}
+          drivers={rows.map((row: any) => ({
+            driverId: row.Driver.driverId,
+            name: `${row.Driver.givenName} ${row.Driver.familyName}`,
+            constructorId: row.Constructor?.constructorId ?? "unknown",
+            teamName: row.Constructor?.name ?? "Unknown team",
+            color: teamColor(row.Constructor?.constructorId),
+            fastestLap: row.FastestLap
+              ? {
+                  lap: Number(row.FastestLap.lap),
+                  ...(row.FastestLap.AverageSpeed?.speed !== undefined
+                    ? {
+                        averageSpeed: Number(
+                          row.FastestLap.AverageSpeed.speed,
+                        ),
+                      }
+                    : {}),
+                  units:
+                    row.FastestLap.AverageSpeed?.units === "kph"
+                      ? "km/h"
+                      : row.FastestLap.AverageSpeed?.units,
+                }
+              : undefined,
+          }))}
+          laps={analysis.laps}
+          pitStops={analysis.pitStops}
+        />
       )}
     </main>
   );

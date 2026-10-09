@@ -34,6 +34,24 @@ export type Race = {
   Sprint?: { date: string; time?: string };
   Results?: any[];
 };
+export type AnalysisSeasonOption = {
+  year: string;
+  races: Race[];
+};
+export type RaceLap = {
+  number: string;
+  Timings: { driverId: string; time: string; position: string }[];
+};
+export type RacePitStop = {
+  driverId: string;
+  lap: string;
+  stop: string;
+  duration: string;
+};
+export type RaceAnalysisData = {
+  laps: RaceLap[];
+  pitStops: RacePitStop[];
+};
 
 export function currentSeason(): string {
   return String(new Date().getFullYear());
@@ -60,6 +78,26 @@ function read<T>(year: string, name: string, fallback: T): T {
     return fallback;
   }
 }
+
+export function raceAnalysis(
+  round: string,
+  year = currentSeason(),
+): RaceAnalysisData | null {
+  if (!/^\d{4}$/.test(year) || !/^\d+$/.test(round)) return null;
+  const lapsData = read<any>(year, `round-${round}-laps.json`, null);
+  const pitStopsData = read<any>(year, `round-${round}-pitstops.json`, null);
+  const laps =
+    lapsData?.RaceTable?.Races?.[0]?.Laps ??
+    lapsData?.MRData?.RaceTable?.Races?.[0]?.Laps;
+  const pitStops =
+    pitStopsData?.RaceTable?.Races?.[0]?.PitStops ??
+    pitStopsData?.MRData?.RaceTable?.Races?.[0]?.PitStops;
+
+  if (!Array.isArray(laps) || !Array.isArray(pitStops)) return null;
+  if (laps.length === 0 && pitStops.length === 0) return null;
+  return { laps, pitStops };
+}
+
 export function driverStandings(year = currentSeason()): DriverStanding[] {
   const d: any = read<any>(year, "driver-standings.json", {
     MRData: { StandingsTable: { StandingsLists: [{ DriverStandings: [] }] } },
@@ -89,6 +127,21 @@ export function schedule(year = currentSeason()): Race[] {
     MRData: { RaceTable: { Races: [] } },
   });
   return d.RaceTable?.Races ?? d.MRData?.RaceTable?.Races ?? [];
+}
+export function analysisSchedule(): AnalysisSeasonOption[] {
+  return availableSeasons()
+    .map((year) => ({
+      year,
+      races: schedule(year).filter((race) => {
+        const directory = path.join(process.cwd(), "data", year);
+        return ["laps", "pitstops"].every((name) =>
+          fs.existsSync(
+            path.join(directory, `round-${race.round}-${name}.json`),
+          ),
+        );
+      }),
+    }))
+    .filter((season) => season.races.length > 0);
 }
 export function circuitImage(circuitId: string): string | undefined {
   if (!/^[a-z0-9_-]+$/i.test(circuitId)) return undefined;

@@ -39,6 +39,9 @@ export function SiteNavigation({ defaultYear }: { defaultYear: string }) {
         <Link href={`/${year}/races`} onClick={closeMenu}>
           <Text id="races" />
         </Link>
+        <Link href="/analysis" onClick={closeMenu}>
+          <Text id="raceAnalysis" />
+        </Link>
         <Link href={`/${year}/compare`} onClick={closeMenu}>
           <Text id="compare" />
         </Link>
