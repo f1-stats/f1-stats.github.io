@@ -47,6 +47,8 @@ export function RacePointsTrendChart({
       drivers.map((driver) => [driver.teamName, driver.color]),
     ).entries(),
   ];
+  const hoveredDriver = hover ? drivers[hover.index] : undefined;
+  const hoveredFastestLapSpeed = hoveredDriver?.fastestLapAverageSpeed;
 
   return (
     <section className="race-points-trend">
@@ -214,10 +216,10 @@ export function RacePointsTrendChart({
                 </span>
                 <b>{drivers[hover.index].points} pts</b>
               </li>
-              {drivers[hover.index].fastestLapAverageSpeed !== undefined && (
+              {hoveredFastestLapSpeed !== undefined && hoveredDriver && (
                 <li className="race-analysis-chart-tooltip-detail">
                   <span>{text.fastestLapAverageSpeed}</span>
-                  <b>{`${drivers[hover.index].fastestLapAverageSpeed.toFixed(3)} ${drivers[hover.index].fastestLapSpeedUnits ?? "km/h"}`}</b>
+                  <b>{`${hoveredFastestLapSpeed.toFixed(3)} ${hoveredDriver.fastestLapSpeedUnits ?? "km/h"}`}</b>
                 </li>
               )}
             </ul>
