@@ -994,6 +994,9 @@ footer a:hover {
 .race h2 {
   font-size: 20px;
   margin: 16px 0 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .race p {
   color: var(--muted);
@@ -1228,6 +1231,10 @@ footer a:hover {
   margin: 0;
 }
 @media (max-width: 800px) {
+  .hero .wrap {
+    padding-top: 68px;
+    padding-bottom: 68px;
+  }
   .page > .session-list .session {
     grid-template-columns: 88px minmax(0, 1fr) minmax(0, 1fr);
     font-size: 9px;
@@ -1395,10 +1402,6 @@ footer a:hover {
   }
   .race-points-trend {
     padding: 14px;
-  }
-  .hero .wrap {
-    padding-top: 68px;
-    padding-bottom: 68px;
   }
   footer {
     flex-direction: column;

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Clock3 } from "lucide-react";
+import { Flag } from "lucide-react";
 import { Text } from "@/app/components/language";
 
 type Session = { date?: string; time?: string };
@@ -38,7 +38,7 @@ function formatSession(session: Session, timeZone: string) {
   const getPart = (type: string) =>
     parts.find((part) => part.type === type)?.value ?? "";
 
-  return `${getPart("year")}-${getPart("month")}-${getPart("day")} ${getPart("hour")}:${getPart("minute")}`;
+  return `${getPart("year")}/${getPart("month")}/${getPart("day")} ${getPart("hour")}:${getPart("minute")}`;
 }
 
 export function RaceWeekend({ race }: { race: RaceWeekendData }) {
@@ -80,7 +80,7 @@ export function RaceWeekend({ race }: { race: RaceWeekendData }) {
       {scheduledSessions.map(([name, session]) => (
         <div className="session" key={name}>
           <span>
-            {name === "race" && <Clock3 aria-hidden="true" size={13} />}{" "}
+            {name === "race" && <Flag aria-hidden="true" size={13} />}{" "}
             <Text id={name} />
           </span>
           <time>{formatSession(session, "UTC")}</time>

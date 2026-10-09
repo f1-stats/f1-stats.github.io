@@ -31,7 +31,7 @@ export default async function RacesPage({
               <span>
                 <Text id="round" /> {race.round}
               </span>
-              <h2>{race.raceName}</h2>
+              <h2 title={race.raceName}>{race.raceName}</h2>
               <p>
                 {race.Circuit.Location.locality},{" "}
                 {race.Circuit.Location.country}
