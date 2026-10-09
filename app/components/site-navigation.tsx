@@ -45,6 +45,12 @@ export function SiteNavigation({ defaultYear }: { defaultYear: string }) {
         <Link href="/tools" onClick={closeMenu}>
           <Text id="calculators" />
         </Link>
+        <Link href="/policy" onClick={closeMenu}>
+          <Text id="privacyPolicy" />
+        </Link>
+        <Link href="/contact" onClick={closeMenu}>
+          <Text id="contact" />
+        </Link>
       </nav>
     </div>
   );

@@ -59,6 +59,7 @@ Next.js writes the static export to `out/`. The GitHub Actions workflow at `.git
 | `/tools/lap-time-calculator`      | Lap-time delta calculator                                     |
 | `/tools/pit-stop-calculator`      | Pit-stop strategy calculator                                  |
 | `/policy`                         | Privacy policy                                                |
+| `/contact`                        | Contact and feedback                                          |
 
 ## Data
 

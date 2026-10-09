@@ -18,6 +18,13 @@ const copy = {
     switchToLight: "Switch to light theme",
     switchToDark: "Switch to dark theme",
     privacyPolicy: "Privacy Policy",
+    contact: "Contact",
+    contactLead:
+      "For questions, data corrections, or suggestions, please contact us through GitHub Issues.",
+    githubIssues: "GitHub Issues",
+    contactInstructions:
+      "For data reports, include the affected season, race, and relevant page.",
+    openGithubIssues: "Open GitHub Issues",
     rightsReserved: "All rights reserved.",
     dataSource: "Data sourced from Jolpica F1 API.",
     heroEyebrow: "FORMULA 1 DATA HUB",
@@ -41,7 +48,7 @@ const copy = {
     teamStandings: "Team standings",
     interactiveTool: "Interactive F1 tool",
     round: "ROUND",
-    allTimesUtc: "All times are UTC.",
+    allTimesUtc: "Times are shown in UTC and your browser time zone.",
     weekendSchedule: "Weekend schedule",
     raceResults: "Race results",
     qualifyingResults: "Qualifying results",
@@ -56,6 +63,9 @@ const copy = {
     session: "SESSION",
     date: "DATE",
     timeUtc: "TIME (UTC)",
+    utc: "UTC",
+    localTime: "Local",
+    localTimeZone: "Local time zone",
     fp1: "FP1",
     fp2: "FP2",
     fp3: "FP3",
@@ -86,9 +96,18 @@ const copy = {
     constructorSeason: "CONSTRUCTOR",
     legal: "LEGAL",
     informationCollection: "Information collection",
+    informationCollectionBody:
+      "F1 Stats does not require an account and does not intentionally collect names, email addresses, or other personal information. The calculators run in your browser and do not send their inputs to this site.",
     dataSources: "Data sources",
+    dataSourcesBody:
+      "Race, driver, and constructor data is sourced from the Jolpica F1 API. This site is an independent statistics resource and is not affiliated with Formula 1, its teams, or its drivers.",
     hostingTechnical: "Hosting and technical data",
+    hostingTechnicalBody:
+      "When this site is hosted through GitHub Pages, GitHub may process technical information such as IP addresses and request logs under its own privacy policy. F1 Stats does not use advertising cookies or third-party analytics.",
     updates: "Updates",
+    updatesBody:
+      "This policy may be updated as the site changes. The latest version is always available on this page.",
+    policyLastUpdated: "Last updated: September 25, 2026",
     compareTitle: "Driver & Team Comparison",
     compareLead:
       "Compare driver standings and season scenarios, or compare constructor standings.",
@@ -163,6 +182,12 @@ const copy = {
     switchToLight: "切换浅色主题",
     switchToDark: "切换深色主题",
     privacyPolicy: "隐私政策",
+    contact: "联系",
+    contactLead:
+      "如有问题、数据更正或功能建议，欢迎通过 GitHub Issues 联系我们。",
+    githubIssues: "GitHub 问题反馈",
+    contactInstructions: "反馈数据问题时，请附上相关赛季、比赛和页面链接。",
+    openGithubIssues: "前往 GitHub Issues",
     rightsReserved: "版权所有。",
     dataSource: "数据来自 Jolpica F1 API。",
     heroEyebrow: "F1 数据中心",
@@ -186,7 +211,7 @@ const copy = {
     teamStandings: "车队积分榜",
     interactiveTool: "交互式 F1 工具",
     round: "第",
-    allTimesUtc: "所有时间均为 UTC。",
+    allTimesUtc: "时间同时显示 UTC 和当前浏览器时区。",
     weekendSchedule: "周末赛程",
     raceResults: "正赛结果",
     qualifyingResults: "排位赛结果",
@@ -201,6 +226,9 @@ const copy = {
     session: "项目",
     date: "日期",
     timeUtc: "时间 (UTC)",
+    utc: "UTC",
+    localTime: "本地",
+    localTimeZone: "本地时区",
     fp1: "第一次练习",
     fp2: "第二次练习",
     fp3: "第三次练习",
@@ -231,9 +259,17 @@ const copy = {
     constructorSeason: "车队",
     legal: "法律信息",
     informationCollection: "信息收集",
+    informationCollectionBody:
+      "F1 Stats 无需注册，也不会主动收集姓名、电子邮件地址或其他个人信息。计算器在您的浏览器中运行，不会将输入内容发送到本站。",
     dataSources: "数据来源",
+    dataSourcesBody:
+      "比赛、车手和车队数据来源于 Jolpica F1 API。本网站是独立统计资源，与 Formula 1、其车队或车手均无关联。",
     hostingTechnical: "托管与技术数据",
+    hostingTechnicalBody:
+      "本网站通过 GitHub Pages 托管时，GitHub 可能会依据其自身隐私政策处理 IP 地址、请求日志等技术信息。F1 Stats 不使用广告 Cookie 或第三方分析工具。",
     updates: "更新",
+    updatesBody: "本政策可能会随网站变化而更新。最新版本始终发布于此页面。",
+    policyLastUpdated: "最后更新：2026 年 9 月 25 日",
     compareTitle: "车手与车队对比",
     compareLead: "对比车手积分与赛季情景，或查看两支车队的积分榜表现。",
     driverComparison: "车手对比",
@@ -326,6 +362,10 @@ export function Text({ id }: { id: CopyKey }) {
 export function useText() {
   const { locale } = useContext(LanguageContext);
   return copy[locale];
+}
+
+export function useLocale() {
+  return useContext(LanguageContext).locale;
 }
 
 export function LanguageSwitcher() {

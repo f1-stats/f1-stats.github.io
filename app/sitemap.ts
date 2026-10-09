@@ -30,15 +30,36 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.6,
     },
     { url: `${siteUrl}/policy`, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${siteUrl}/contact`, changeFrequency: "yearly", priority: 0.3 },
   ];
 
   const seasons = availableSeasons();
   const seasonPages = seasons.flatMap((year) => [
-    { url: `${siteUrl}/${year}`, changeFrequency: "weekly" as const, priority: 0.9 },
-    { url: `${siteUrl}/${year}/drivers`, changeFrequency: "weekly" as const, priority: 0.8 },
-    { url: `${siteUrl}/${year}/teams`, changeFrequency: "weekly" as const, priority: 0.8 },
-    { url: `${siteUrl}/${year}/races`, changeFrequency: "weekly" as const, priority: 0.8 },
-    { url: `${siteUrl}/${year}/compare`, changeFrequency: "monthly" as const, priority: 0.7 },
+    {
+      url: `${siteUrl}/${year}`,
+      changeFrequency: "weekly" as const,
+      priority: 0.9,
+    },
+    {
+      url: `${siteUrl}/${year}/drivers`,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/${year}/teams`,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/${year}/races`,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    },
+    {
+      url: `${siteUrl}/${year}/compare`,
+      changeFrequency: "monthly" as const,
+      priority: 0.7,
+    },
     ...driverStandings(year).map(({ Driver }) => ({
       url: `${siteUrl}/${year}/drivers/${encodeURIComponent(Driver.driverId)}`,
       changeFrequency: "weekly" as const,

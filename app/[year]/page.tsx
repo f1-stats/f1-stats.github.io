@@ -1,4 +1,4 @@
-import { HomeContent } from "@/app/page";
+import { HomeContent } from "@/app/components/home-content";
 
 export default async function SeasonHome({
   params,
