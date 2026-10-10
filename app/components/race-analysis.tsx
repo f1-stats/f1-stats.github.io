@@ -3,6 +3,7 @@
 import { Fragment, useState } from "react";
 import { Plus, X } from "lucide-react";
 import { useText } from "@/app/components/language";
+import { useChartWidth } from "@/app/components/use-chart-width";
 import type { RaceLap, RacePitStop } from "@/lib/f1";
 
 type RaceDriver = {
@@ -39,12 +40,15 @@ function LapTimeChart({
   drivers,
   label,
   fastestSpeedLabel,
+  speedUnavailableLabel,
 }: {
   laps: RaceLap[];
   drivers: RaceDriver[];
   label: string;
   fastestSpeedLabel: string;
+  speedUnavailableLabel: string;
 }) {
+  const [containerRef, width] = useChartWidth(840);
   const [hover, setHover] = useState<{
     lap: number;
     left: number;
@@ -66,7 +70,6 @@ function LapTimeChart({
 
   if (points.length === 0) return null;
 
-  const width = 840;
   const height = 310;
   const margin = { top: 20, right: 24, bottom: 42, left: 68 };
   const minLapTime = Math.min(...points.map((point) => point.seconds));
@@ -80,7 +83,7 @@ function LapTimeChart({
   const y = (seconds: number) =>
     margin.top + ((maxLapTime - seconds) / lapTimeRange) * plotHeight;
   return (
-    <div className="race-analysis-chart-scroll">
+    <div ref={containerRef} className="race-analysis-chart-scroll">
       <svg
         className="race-analysis-chart"
         viewBox={`0 0 ${width} ${height}`}
@@ -260,11 +263,14 @@ function LapTimeChart({
                     <b>{point ? formatLapTime(point.seconds) : "—"}</b>
                   </li>
                   {point &&
-                    driver.fastestLap?.lap === hover.lap &&
-                    driver.fastestLap.averageSpeed !== undefined && (
+                    driver.fastestLap?.lap === hover.lap && (
                       <li className="race-analysis-chart-tooltip-detail">
                         <span>{fastestSpeedLabel}</span>
-                        <b>{`${driver.fastestLap.averageSpeed.toFixed(3)} ${driver.fastestLap.units ?? "km/h"}`}</b>
+                        <b>
+                          {driver.fastestLap.averageSpeed === undefined
+                            ? speedUnavailableLabel
+                            : `${driver.fastestLap.averageSpeed.toFixed(3)} ${driver.fastestLap.units ?? "km/h"}`}
+                        </b>
                       </li>
                     )}
                 </Fragment>
@@ -454,7 +460,7 @@ export function RaceAnalysis({
                   </td>
                   <td>
                     {driver.fastestLap?.averageSpeed === undefined
-                      ? "—"
+                      ? text.speedUnavailable
                       : `${driver.fastestLap.averageSpeed.toFixed(3)} ${driver.fastestLap.units ?? "km/h"}`}
                   </td>
                   <td>{driver.stops}</td>
@@ -471,6 +477,7 @@ export function RaceAnalysis({
           drivers={selectedDrivers}
           label={text.lapLabel}
           fastestSpeedLabel={text.fastestLapAverageSpeed}
+          speedUnavailableLabel={text.speedUnavailable}
         />
       )}
 

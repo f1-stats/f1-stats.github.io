@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Text } from "@/app/components/language";
+import { useChartWidth } from "@/app/components/use-chart-width";
 
 type QualifyingDriver = {
   code: string;
@@ -12,7 +13,6 @@ type QualifyingDriver = {
   teamName: string;
 };
 
-const chartWidth = 960;
 const chartHeight = 340;
 const chartMargin = { top: 20, right: 24, bottom: 42, left: 72 };
 
@@ -27,6 +27,7 @@ export function QualifyingLapTrendChart({
 }: {
   drivers: QualifyingDriver[];
 }) {
+  const [containerRef, chartWidth] = useChartWidth(960);
   const [hover, setHover] = useState<{
     index: number;
     left: number;
@@ -34,6 +35,7 @@ export function QualifyingLapTrendChart({
   } | null>(null);
   const plotWidth = chartWidth - chartMargin.left - chartMargin.right;
   const plotHeight = chartHeight - chartMargin.top - chartMargin.bottom;
+  const labelStep = Math.max(1, Math.ceil(drivers.length / (plotWidth / 32)));
   const lapTimes = drivers.map((driver) => driver.time);
   if (!lapTimes.length) return null;
 
@@ -68,7 +70,7 @@ export function QualifyingLapTrendChart({
           </p>
         </div>
       </div>
-      <div className="race-points-trend-scroll">
+      <div ref={containerRef} className="race-points-trend-scroll">
         <svg
           className="race-points-trend-svg"
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
@@ -139,17 +141,19 @@ export function QualifyingLapTrendChart({
               </text>
             </g>
           ))}
-          {drivers.map((driver, index) => (
-            <text
-              key={driver.code}
-              x={x(index)}
-              y={chartHeight - 12}
-              textAnchor="middle"
-              fill={driver.color}
-            >
-              {driver.code}
-            </text>
-          ))}
+          {drivers.map((driver, index) =>
+            index % labelStep === 0 || index === drivers.length - 1 ? (
+              <text
+                key={driver.code}
+                x={x(index)}
+                y={chartHeight - 12}
+                textAnchor="middle"
+                fill={driver.color}
+              >
+                {driver.code}
+              </text>
+            ) : null,
+          )}
           {drivers.slice(0, -1).map((driver, index) => (
             <line
               key={`${driver.code}-${drivers[index + 1].code}`}

@@ -552,7 +552,7 @@ footer a:hover {
 .race-points-trend-svg {
   display: block;
   width: 100%;
-  min-width: 620px;
+  min-width: 0;
   height: auto;
   overflow: visible;
   pointer-events: all;
@@ -848,7 +848,7 @@ footer a:hover {
 .race-analysis-chart {
   display: block;
   width: 100%;
-  min-width: 620px;
+  min-width: 0;
   height: auto;
   pointer-events: all;
 }

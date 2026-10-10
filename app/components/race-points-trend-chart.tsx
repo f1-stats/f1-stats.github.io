@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Text, useText } from "@/app/components/language";
+import { useChartWidth } from "@/app/components/use-chart-width";
 
 type RacePointDriver = {
   code: string;
@@ -13,7 +14,6 @@ type RacePointDriver = {
   fastestLapSpeedUnits?: string;
 };
 
-const chartWidth = 960;
 const chartHeight = 340;
 const chartMargin = { top: 20, right: 24, bottom: 42, left: 54 };
 
@@ -27,6 +27,7 @@ export function RacePointsTrendChart({
   lead?: "racePointsChartLead" | "driverPointsTrendLead";
 }) {
   const text = useText();
+  const [containerRef, chartWidth] = useChartWidth(960);
   const [hover, setHover] = useState<{
     index: number;
     left: number;
@@ -34,6 +35,7 @@ export function RacePointsTrendChart({
   } | null>(null);
   const plotWidth = chartWidth - chartMargin.left - chartMargin.right;
   const plotHeight = chartHeight - chartMargin.top - chartMargin.bottom;
+  const labelStep = Math.max(1, Math.ceil(drivers.length / (plotWidth / 32)));
   const x = (index: number) =>
     chartMargin.left +
     (drivers.length === 1
@@ -65,7 +67,7 @@ export function RacePointsTrendChart({
           <Text id="points" />
         </span>
       </div>
-      <div className="race-points-trend-scroll">
+      <div ref={containerRef} className="race-points-trend-scroll">
         <svg
           className="race-points-trend-svg"
           viewBox={`0 0 ${chartWidth} ${chartHeight}`}
@@ -141,17 +143,19 @@ export function RacePointsTrendChart({
               </text>
             </g>
           ))}
-          {drivers.map((driver, index) => (
-            <text
-              key={driver.code}
-              x={x(index)}
-              y={chartHeight - 12}
-              textAnchor="middle"
-              fill={driver.color}
-            >
-              {driver.code}
-            </text>
-          ))}
+          {drivers.map((driver, index) =>
+            index % labelStep === 0 || index === drivers.length - 1 ? (
+              <text
+                key={driver.code}
+                x={x(index)}
+                y={chartHeight - 12}
+                textAnchor="middle"
+                fill={driver.color}
+              >
+                {driver.code}
+              </text>
+            ) : null,
+          )}
           {drivers.slice(0, -1).map((driver, index) => (
             <line
               key={`${driver.code}-${drivers[index + 1].code}`}
@@ -216,10 +220,14 @@ export function RacePointsTrendChart({
                 </span>
                 <b>{drivers[hover.index].points} pts</b>
               </li>
-              {hoveredFastestLapSpeed !== undefined && hoveredDriver && (
+              {hoveredDriver && (
                 <li className="race-analysis-chart-tooltip-detail">
                   <span>{text.fastestLapAverageSpeed}</span>
-                  <b>{`${hoveredFastestLapSpeed.toFixed(3)} ${hoveredDriver.fastestLapSpeedUnits ?? "km/h"}`}</b>
+                  <b>
+                    {hoveredFastestLapSpeed === undefined
+                      ? text.speedUnavailable
+                      : `${hoveredFastestLapSpeed.toFixed(3)} ${hoveredDriver.fastestLapSpeedUnits ?? "km/h"}`}
+                  </b>
                 </li>
               )}
             </ul>
