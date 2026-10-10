@@ -546,7 +546,7 @@ footer a:hover {
 }
 .race-points-trend-scroll {
   position: relative;
-  overflow-x: auto;
+  overflow: visible;
   margin-top: 14px;
 }
 .race-points-trend-svg {
@@ -782,14 +782,13 @@ footer a:hover {
 }
 .race-analysis-chart-scroll {
   position: relative;
+  overflow: visible;
   margin-top: 14px;
 }
 .race-analysis-chart-tooltip {
   position: absolute;
   z-index: 3;
   width: min(244px, calc(100% - 16px));
-  max-height: 210px;
-  overflow: auto;
   padding: 9px 11px;
   border: 1px solid var(--muted);
   border-radius: 4px;
